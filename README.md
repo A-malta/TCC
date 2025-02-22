@@ -83,7 +83,6 @@ Este é um projeto acadêmico ainda fechado. No futuro, sugestões serão bem-vi
 - [Acrescentar documentação GRBL](https://github.com/gnea/grbl)  
 - [Linkedin LAAC](https://www.linkedin.com/company/laac-ufv/posts/?feedView=all)
 - [Instagram LAAC](https://www.instagram.com/laac.ufv/)
-- [plantDitech](https://www.plant-ditech.com/#)  
 
 ---
 
