@@ -1,6 +1,6 @@
 # 🤖 Automação de CNC para Fenotipagem em Agricultura de Ambiente Controlado  
 ### TCC - Universidade Federal de Viçosa (UFV)  
-Bem-vindo ao projeto de automação de uma máquina CNC para integrar a fenotipagem de alto rendimento no Laboratório de Agricultura em Ambiente Controlado da UFV (LAAC)!  
+Bem-vindo ao projeto de automação de uma máquina CNC (Comando Numérico Computadorizado) para integrar a fenotipagem de alto rendimento no Laboratório de Agricultura em Ambiente Controlado da UFV (LAAC)!  
 
 ---
 
