@@ -37,7 +37,7 @@ Este trabalho de conclusão de curso desenvolve um sistema de automação para u
 2. **Programação do Caminho:** A CNC é programada para seguir coordenadas específicas (ex.: X, Y);  
 3. **Captura de Dados:** A câmera acoplada à CNC registra imagens em cada vaso ao longo da trajetória.    
 
-![Mesa de Fenotipagem](https://github.com/A-malta/TCC/blob/main/images/PhenotypingRoom.jpeg)   
+![Mesa de Fenotipagem](https://github.com/A-malta/TCC/blob/beta/images/PhenotypingRoom.jpg)   
 *(Substitua "link-para-imagem" pelo caminho real da imagem no repositório)*  
 
 ---
