@@ -37,7 +37,7 @@ Este trabalho de conclusão de curso desenvolve um sistema de automação para u
 2. **Programação do Caminho:** A CNC é programada para seguir coordenadas específicas (ex.: X, Y);  
 3. **Captura de Dados:** A câmera acoplada à CNC registra imagens em cada vaso ao longo da trajetória.    
 
-![Exemplo de Mesa de Fenotipagem](link-para-imagem/mesa_fenotipagem.jpg)  
+![Mesa de Fenotipagem](https://github.com/A-malta/TCC/blob/main/images/PhenotypingRoom.jpeg)   
 *(Substitua "link-para-imagem" pelo caminho real da imagem no repositório)*  
 
 ---
@@ -53,7 +53,7 @@ Este trabalho de conclusão de curso desenvolve um sistema de automação para u
    ```bash
    git clone https://github.com/A-malta/TCC.git
    ```
-2. Configure as coordenadas da CNC no arquivo `config.json`.  
+2. Configure as coordenadas da CNC e outros detalhes no arquivo `config.json`.  
 3. Execute o script principal:  
    ```bash
    python main.py
