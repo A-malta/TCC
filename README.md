@@ -79,7 +79,8 @@ Este é um projeto acadêmico ainda fechado. No futuro, sugestões serão bem-vi
 
 ## 📚 Referências  
 - [Acrescentar SpectralINT](https://github.com/gnea/grbl)
-- [Acrescentar documentação GRBL](https://github.com/gnea/grbl)  
+- [Wiki GRBL](https://github.com/gnea/grbl/wiki)
+- [Lista dos comandos G-code mais importantes](https://howtomechatronics-com.translate.goog/tutorials/g-code-explained-list-of-most-important-g-code-commands/?_x_tr_sl=en&_x_tr_tl=pt&_x_tr_hl=pt&_x_tr_pto=tc)
 - [Linkedin LAAC](https://www.linkedin.com/company/laac-ufv/posts/?feedView=all)
 - [Instagram LAAC](https://www.instagram.com/laac.ufv/)
 
