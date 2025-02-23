@@ -7,20 +7,24 @@ import os
 import threading
 import sys
 import functions
+import json
 
 def main():
+    with open("cfg.json", "r") as file:
+        data = json.load(file)
+        
     # Diretório para salvar as imagens
     DIR_IMG = "TT1/"
     os.makedirs(DIR_IMG, exist_ok=True)
     
     # Configurações do GRBL e porta serial
-    PORT = "COM4"         # Porta de comunicação com Arduino/GRBL
-    BAUDRATE = 115200     # Taxa de transferência - padrão GRBL
+    PORT = data["port"]        # Porta de comunicação com Arduino/GRBL
+    BAUDRATE = data["baudrate"]     # Taxa de transferência - padrão GRBL
     
     # Dados das plantas
-    ID_PLANT = ['B01', 'B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B09', 'B10', 'B11', 'B12']
-    POS_X_PLANT = [-132.313, -132.313, -132.313, -132.313, -132.313, -132.313, -782.313, -782.313, -782.313, -782.313, -782.313, -782.313]
-    POS_Y_PLANT = [-1810.775, -1510.775, -1110.775, -810.775, -460.775, -110.775, -1835.775, -1460.775, -1155.350, -768.613, -463.100, -79.275]
+    ID_PLANT = [plant["id"] for plant in data["plants"]]
+    POS_X_PLANT = [plant["X"] for plant in data["plants"]]
+    POS_Y_PLANT = [plant["Y"] for plant in data["plants"]]
     
     # Inicializa câmera e conexão serial (serão definidos na função init_system)
     cam = None
