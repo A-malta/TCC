@@ -10,8 +10,8 @@ Data = 20 / 02 /2025
 """
 
 #pacotes
-import cv2 as cv #conda install conda-forge::opencv
-import serial    #pip install pyserial
+import cv2 as cv 
+import serial    
 import time
 import os
 import json
