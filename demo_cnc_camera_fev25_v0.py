@@ -10,18 +10,23 @@ Data = 20 / 02 /2025
 """
 
 #pacotes
-import cv2 as cv #conda install conda-forge::opencv
-import serial    #pip install pyserial
+import cv2 as cv 
+import serial    
 import time
 import os
+import json
 
 #configura o diretorio para salvar
 dir_img="TT1/"
 if not os.path.exists(dir_img): os.makedirs(dir_img)
 
 #configuracoes do usuario
-PORT = "COM4"    # porta de comunicacão com Arduino
-BAUDRATE = 115200 # taxa de transferencia - padrão GRBL
+with open("cfg.json", "r") as file:
+    data = json.load(file)
+    
+PORT = data["port"]        # Porta de comunicação com Arduino/GRBL
+BAUDRATE = data["baudrate"]     # Taxa de transferência - padrão GRBL
+
 '''
  P1 a P6 direita , P7 a P12 direita
 <---- -X
@@ -30,9 +35,9 @@ P3 P4
 ....
 P11 P12
 '''
-ID_PLANT= ['P1','P2','P3','P4','P5','P6','P7','P8','P9','P10','P11','P12']
-POS_X_PLANT = [-300,-300,-300,-300,-300,-300,-600,-600,-600,-600,-600,-600] 
-POS_Y_PLANT = [-300,-300,-600,-600,-900,-900,-1200,-1200,-1500,-1500,-1800,-1800] 
+ID_PLANT = [plant["id"] for plant in data["plants"]]
+POS_X_PLANT = [plant["X"] for plant in data["plants"]]
+POS_Y_PLANT = [plant["Y"] for plant in data["plants"]]
 
 
 # Inicia camera
