@@ -10,6 +10,7 @@ import functions
 import time
 import json
 from PIL import Image, ImageTk
+import threading
 
 
 def main():
@@ -97,10 +98,10 @@ def main():
     img_name_label = ttk.Label(frame_img_name, text="Nome da imagem:", background="#E0E7E9", font=fonte_padrao)
     img_name_label.pack(side="left", padx=(0, 5))
 
-    img_name_entry = tk.Entry(frame_img_name, width=35, relief="flat", borderwidth=0, font=fonte_padrao)
+    img_name_entry = tk.Entry(frame_img_name, relief="flat", borderwidth=0, font=fonte_padrao)
     img_name_entry.pack(side="left")
 
-    img_label = tk.Label(frame_image, bg="white", width=50, height=25, relief="solid")
+    img_label = tk.Label(frame_image, bg="white", width=40, height=30, relief="solid")
     img_label.pack(padx=10, pady=10)
 
     # Botão Fechar Sistema

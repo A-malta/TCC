@@ -8,6 +8,7 @@ import threading
 import datetime
 from PIL import Image, ImageTk
 import tkinter as tk
+import threading
 
 
 def iniciar_camera(camera_id=0, largura=1920, altura=1080):
@@ -104,7 +105,6 @@ def close_system(grbl, cam, root):
     cv.destroyAllWindows()
     root.quit()  
 
-
 def toggle_plant_selection(plant_id, selected_plants, plant_buttons):
         if selected_plants.get(plant_id):
             selected_plants.pop(plant_id)
@@ -112,17 +112,6 @@ def toggle_plant_selection(plant_id, selected_plants, plant_buttons):
         else:
             selected_plants[plant_id] = True
             plant_buttons[plant_id].config(bg="lightgreen", fg="black")
-
-def executar_coleta_bloco(bloco, speed_entry, pos_x_plant, pos_y_plant, dir_img, id_plant, move_delay, grbl, img_label, img_name_entry):
-    if bloco == 3:
-        start_idx, end_idx = 6, 11
-    elif bloco == 4:
-        start_idx, end_idx = 0, 5
-    else:
-        messagebox.showerror("Erro", "Bloco inválido.")
-        return
-    processo_bloco(speed_entry, start_idx, end_idx, pos_x_plant, pos_y_plant, dir_img, id_plant, move_delay, grbl, img_label, img_name_entry)
-
 
 def processo_bloco(speed_entry, start_idx, end_idx, pos_x_plant, pos_y_plant, dir_img, id_plant, move_delay, grbl, img_label, img_name_entry):
     try:
@@ -143,16 +132,14 @@ def processo_bloco(speed_entry, start_idx, end_idx, pos_x_plant, pos_y_plant, di
     except ValueError:
         messagebox.showerror("Erro", "Velocidade inválida.")
 
-def atualizar_imagem(caminho_imagem, nome_imagem, img_label, img_name_entry):
-    img = Image.open(caminho_imagem)
-    img = img.resize((400, 300))
-    img_tk = ImageTk.PhotoImage(img)
-    img_label.config(image=img_tk)
-    img_label.image = img_tk
-    img_name_entry.delete(0, tk.END)
-    img_name_entry.insert(0, nome_imagem)
-
 def executar_captura(selected_plants, speed_entry, id_plant, grbl, pos_x_plant, pos_y_plant, dir_img, move_delay, img_label, img_name_entry, plant_buttons):
+    thread = threading.Thread(
+        target=_executar_captura_thread,
+        args=(selected_plants, speed_entry, id_plant, grbl, pos_x_plant, pos_y_plant, dir_img, move_delay, img_label, img_name_entry, plant_buttons)
+    )
+    thread.start()
+
+def _executar_captura_thread(selected_plants, speed_entry, id_plant, grbl, pos_x_plant, pos_y_plant, dir_img, move_delay, img_label, img_name_entry, plant_buttons):
     try:
         velocidade = int(speed_entry.get())
 
@@ -165,14 +152,38 @@ def executar_captura(selected_plants, speed_entry, id_plant, grbl, pos_x_plant, 
         for plant_id in sequence:
             idx = id_plant.index(plant_id)
             caminho_imagem, nome_imagem = processar_planta(idx, grbl, velocidade, pos_x_plant, pos_y_plant, dir_img, id_plant, move_delay)
+
             if caminho_imagem:
-                atualizar_imagem(caminho_imagem, nome_imagem, img_label, img_name_entry)
-                plant_buttons[plant_id].config(bg="lightgreen")
+                img_label.after(0, atualizar_imagem, caminho_imagem, nome_imagem, img_label, img_name_entry)
+                plant_buttons[plant_id].after(0, lambda pid=plant_id: plant_buttons[pid].config(bg="lightgreen"))
             else:
-                plant_buttons[plant_id].config(bg="red")
+                plant_buttons[plant_id].after(0, lambda pid=plant_id: plant_buttons[pid].config(bg="red"))
 
     except ValueError:
         messagebox.showerror("Erro", "Entradas inválidas. Verifique os campos.")
 
+def executar_coleta_bloco(bloco, speed_entry, pos_x_plant, pos_y_plant, dir_img, id_plant, move_delay, grbl, img_label, img_name_entry):
+    thread = threading.Thread(
+        target=_executar_coleta_bloco_thread,
+        args=(bloco, speed_entry, pos_x_plant, pos_y_plant, dir_img, id_plant, move_delay, grbl, img_label, img_name_entry)
+    )
+    thread.start()
 
+def _executar_coleta_bloco_thread(bloco, speed_entry, pos_x_plant, pos_y_plant, dir_img, id_plant, move_delay, grbl, img_label, img_name_entry):
+    if bloco == 3:
+        start_idx, end_idx = 6, 11
+    elif bloco == 4:
+        start_idx, end_idx = 0, 5
+    else:
+        messagebox.showerror("Erro", "Bloco inválido.")
+        return
+    processo_bloco(speed_entry, start_idx, end_idx, pos_x_plant, pos_y_plant, dir_img, id_plant, move_delay, grbl, img_label, img_name_entry)
 
+def atualizar_imagem(caminho_imagem, nome_imagem, img_label, img_name_entry):
+    img = Image.open(caminho_imagem)
+    img = img.resize((1920, 1080))
+    img_tk = ImageTk.PhotoImage(img)
+    img_label.config(image=img_tk)
+    img_label.image = img_tk
+    img_name_entry.delete(0, tk.END)
+    img_name_entry.insert(0, nome_imagem)
