@@ -6,6 +6,9 @@ import time
 import os
 import threading
 import datetime
+from PIL import Image, ImageTk
+import tkinter as tk
+
 
 def iniciar_camera(camera_id=0, largura=1920, altura=1080):
     print("Iniciando câmera...")
@@ -51,7 +54,6 @@ def capturar_imagem(indice, cam, dir_img, id_plant):
         print("Erro ao capturar imagem!")
         return None, None
     frame_resized = cv.resize(frame, (640, 360))
-    cv.imshow('Imagem Capturada', frame_resized)
     current_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     nome_arquivo = os.path.join(dir_img, f"{id_plant[indice]}_{current_time}.jpg")
     cv.imwrite(nome_arquivo, frame)
@@ -92,17 +94,18 @@ def processar_planta(indice, grbl, velocidade, pos_x_plant, pos_y_plant, dir_img
 def init_system(dir_img, id_plant, port, baudrate):
     cam = iniciar_camera()
     grbl = iniciar_serial(port, baudrate)
-    capturar_imagem(0, cam, dir_img, id_plant)
     return cam, grbl
 
-def close_system(grbl, cam):
+def close_system(grbl, cam, root):
     if grbl is not None:
         grbl.close()
     if cam is not None:
         cam.release()
     cv.destroyAllWindows()
+    root.quit()  
 
-def toggle_plant_selection(plant_id):
+
+def toggle_plant_selection(plant_id, selected_plants, plant_buttons):
         if selected_plants.get(plant_id):
             selected_plants.pop(plant_id)
             plant_buttons[plant_id].config(bg="white", fg="black")
@@ -110,66 +113,66 @@ def toggle_plant_selection(plant_id):
             selected_plants[plant_id] = True
             plant_buttons[plant_id].config(bg="lightgreen", fg="black")
 
-def executar_coleta_bloco(bloco):
-        if bloco == 3:
-            start_idx, end_idx = 6, 11
-        elif bloco == 4:
-            start_idx, end_idx = 0, 5
-        else:
-            messagebox.showerror("Erro", "Bloco inválido.")
-            return
+def executar_coleta_bloco(bloco, speed_entry, pos_x_plant, pos_y_plant, dir_img, id_plant, move_delay, grbl, img_label, img_name_entry):
+    if bloco == 3:
+        start_idx, end_idx = 6, 11
+    elif bloco == 4:
+        start_idx, end_idx = 0, 5
+    else:
+        messagebox.showerror("Erro", "Bloco inválido.")
+        return
+    processo_bloco(speed_entry, start_idx, end_idx, pos_x_plant, pos_y_plant, dir_img, id_plant, move_delay, grbl, img_label, img_name_entry)
 
-def processo_bloco():
+
+def processo_bloco(speed_entry, start_idx, end_idx, pos_x_plant, pos_y_plant, dir_img, id_plant, move_delay, grbl, img_label, img_name_entry):
     try:
         velocidade = int(speed_entry.get())
         for idx in range(start_idx, end_idx + 1):
-            caminho_imagem, nome_imagem = functions.processar_planta(
+            caminho_imagem, nome_imagem = processar_planta(
                 idx,
                 grbl,
                 velocidade,
-                POS_X_PLANT,
-                POS_Y_PLANT,
-                DIR_IMG,
-                ID_PLANT,
-                MOVE_DELAY
+                pos_x_plant,
+                pos_y_plant,
+                dir_img,
+                id_plant,
+                move_delay
             )
-            ...
+            atualizar_imagem(caminho_imagem, nome_imagem, img_label, img_name_entry)
+
     except ValueError:
         messagebox.showerror("Erro", "Velocidade inválida.")
 
-def atualizar_imagem(caminho_imagem, nome_imagem):
-        img = Image.open(caminho_imagem)
-        img = img.resize((400, 300), Image.ANTIALIAS)
-        img_tk = ImageTk.PhotoImage(img)
-        img_label.config(image=img_tk)
-        img_label.image = img_tk
-        img_name_entry.delete(0, tk.END)
-        img_name_entry.insert(0, nome_imagem)
+def atualizar_imagem(caminho_imagem, nome_imagem, img_label, img_name_entry):
+    img = Image.open(caminho_imagem)
+    img = img.resize((400, 300))
+    img_tk = ImageTk.PhotoImage(img)
+    img_label.config(image=img_tk)
+    img_label.image = img_tk
+    img_name_entry.delete(0, tk.END)
+    img_name_entry.insert(0, nome_imagem)
 
-def executar_captura():
-        try:
-            velocidade = int(speed_entry.get())
+def executar_captura(selected_plants, speed_entry, id_plant, grbl, pos_x_plant, pos_y_plant, dir_img, move_delay, img_label, img_name_entry, plant_buttons):
+    try:
+        velocidade = int(speed_entry.get())
 
-            if not selected_plants:
-                messagebox.showerror("Erro", "Nenhuma planta selecionada.")
-                return
+        if not selected_plants:
+            messagebox.showerror("Erro", "Nenhuma planta selecionada.")
+            return
 
-            sequence = list(selected_plants.keys())
+        sequence = list(selected_plants.keys())
 
-            for plant_id in sequence:
-                idx = ID_PLANT.index(plant_id)
-                caminho_imagem, nome_imagem = functions.processar_planta(idx, grbl, velocidade, POS_X_PLANT, POS_Y_PLANT, DIR_IMG, ID_PLANT, MOVE_DELAY)
-                if caminho_imagem:
-                    atualizar_imagem(caminho_imagem, nome_imagem)
-                    plant_buttons[plant_id].config(bg="lightgreen")
-                else:
-                    plant_buttons[plant_id].config(bg="red")
+        for plant_id in sequence:
+            idx = id_plant.index(plant_id)
+            caminho_imagem, nome_imagem = processar_planta(idx, grbl, velocidade, pos_x_plant, pos_y_plant, dir_img, id_plant, move_delay)
+            if caminho_imagem:
+                atualizar_imagem(caminho_imagem, nome_imagem, img_label, img_name_entry)
+                plant_buttons[plant_id].config(bg="lightgreen")
+            else:
+                plant_buttons[plant_id].config(bg="red")
 
-        except ValueError:
-            messagebox.showerror("Erro", "Entradas inválidas. Verifique os campos.")
-
-
-
+    except ValueError:
+        messagebox.showerror("Erro", "Entradas inválidas. Verifique os campos.")
 
 
 

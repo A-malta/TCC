@@ -11,6 +11,7 @@ import time
 import json
 from PIL import Image, ImageTk
 
+
 def main():
     with open("cfg.json", "r") as file:
         data = json.load(file)
@@ -18,12 +19,12 @@ def main():
     DIR_IMG = "TT1/"
     os.makedirs(DIR_IMG, exist_ok=True)
 
-    PORT = data["port"]
-    BAUDRATE = data["baudrate"]
+    port = data["port"]
+    baudrate = data["baudrate"]
 
-    ID_PLANT = [plant["id"] for plant in data["plants"]]
-    POS_X_PLANT = [plant["X"] for plant in data["plants"]]
-    POS_Y_PLANT = [plant["Y"] for plant in data["plants"]]
+    id_plant = [plant["id"] for plant in data["plants"]]
+    pos_x_plant = [plant["X"] for plant in data["plants"]]
+    pos_y_plant = [plant["Y"] for plant in data["plants"]]
 
     MOVE_DELAY = 10
 
@@ -60,7 +61,7 @@ def main():
     for i, plant_id in enumerate(new_order):
         btn = tk.Button(frame_plants, text=f"B{plant_id:02}", width=5, height=2, bg="white", fg="black",
                         relief="flat", borderwidth=0, font=fonte_padrao,
-                        command=lambda pid=f"B{plant_id:02}": functions.toggle_plant_selection(pid))
+                        command=lambda pid=f"B{plant_id:02}": functions.toggle_plant_selection(pid, selected_plants, plant_buttons))
         row = i % 6
         col = 0 if i < 6 else 1
         btn.grid(row=row + 1, column=col, padx=10, pady=5, sticky="nsew")
@@ -72,14 +73,14 @@ def main():
 
     ttk.Label(bloco_frame, text="Coleta por Bloco", background="#E0E7E9", font=fonte_titulo).grid(row=0, column=0, columnspan=2, pady=(0, 5), sticky="nsew")
 
-    btn_bloco3 = ttk.Button(bloco_frame, text="Coletar Bloco 3", command=lambda: functions.executar_coleta_bloco(3))
+    btn_bloco3 = ttk.Button(bloco_frame, text="Coletar Bloco 3", command=lambda: functions.executar_coleta_bloco(3, speed_entry, pos_x_plant, pos_y_plant, DIR_IMG, id_plant, MOVE_DELAY, grbl, img_label, img_name_entry))
     btn_bloco3.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
 
-    btn_bloco4 = ttk.Button(bloco_frame, text="Coletar Bloco 4", command=lambda: functions.executar_coleta_bloco(4))
+    btn_bloco4 = ttk.Button(bloco_frame, text="Coletar Bloco 4", command=lambda: functions.executar_coleta_bloco(4, speed_entry, pos_x_plant, pos_y_plant, DIR_IMG, id_plant, MOVE_DELAY, grbl, img_label, img_name_entry))
     btn_bloco4.grid(row=1, column=1, padx=5, pady=5, sticky="nsew")
 
     # Botão Iniciar Coleta
-    btn_start = ttk.Button(frame_plants, text="Iniciar Coleta", command=lambda: functions.executar_captura())
+    btn_start = ttk.Button(frame_plants, text="Iniciar Coleta", command=lambda: functions.executar_captura(selected_plants, speed_entry, id_plant, grbl, pos_x_plant, pos_y_plant, DIR_IMG, MOVE_DELAY, img_label, img_name_entry, plant_buttons))
     btn_start.grid(row=8, column=0, columnspan=2, pady=10, sticky="ew")
 
     # Área de visualização da imagem
@@ -103,13 +104,13 @@ def main():
     img_label.pack(padx=10, pady=10)
 
     # Botão Fechar Sistema
-    btn_close = ttk.Button(root, text="Fechar Sistema", command=lambda: functions.close_system(grbl, cam))
+    btn_close = ttk.Button(root, text="Fechar Sistema", command=lambda: functions.close_system(grbl, cam, root))
     btn_close.place(relx=0.5, rely=0.98, anchor="s")
 
     # Inicialização do sistema
-    cam, grbl = functions.init_system(DIR_IMG, ID_PLANT, PORT, BAUDRATE)
+    cam, grbl = functions.init_system(DIR_IMG, id_plant, port, baudrate)
 
-    root.protocol("WM_DELETE_WINDOW", lambda: functions.close_system(grbl, cam))
+    root.protocol("WM_DELETE_WINDOW", lambda: functions.close_system(grbl, cam, root))
     root.mainloop()
 
 if __name__ == "__main__":
