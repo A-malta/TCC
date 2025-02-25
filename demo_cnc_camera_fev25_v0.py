@@ -27,6 +27,7 @@ with open("cfg.json", "r") as file:
 PORT = data["port"]        # Porta de comunicação com Arduino/GRBL
 BAUDRATE = data["baudrate"]     # Taxa de transferência - padrão GRBL
 
+
 '''
  P1 a P6 direita , P7 a P12 direita
 <---- -X
