@@ -94,19 +94,19 @@ def GetImage(plant):
 GetImage(0)
 
 #comando Unlock
-wait_user('Unlock ?')
+#wait_user('Unlock ?')
 print ("Desbloqueando...")
 send_grbl('$X')
 time.sleep(2)
 
 #comando ToHome
-wait_user('To Home ?')
+#wait_user('To Home ?')
 print ("Go to home...")
 send_grbl('$H')
 time.sleep(10)
 
 #Comando ir ao ponto X0 Y0 -- Precisa começar em X0 Y0????
-wait_user('To X0 Y0 ? ')
+#wait_user('To X0 Y0 ? ')
 print ("Go to X0 Y0...")
 send_grbl('G0X0Y0')
 time.sleep(10)
@@ -122,7 +122,7 @@ send_grbl('?')
 
 #inicia captura automatizada 
 #Vai até cada planta e captura 1 imagem
-wait_user('Iniciar Captura Automatica? ')
+#wait_user('Iniciar Captura Automatica? ')
 print ("Iniciando Captura...")
 
 #define velocidade de deslocamento
@@ -136,10 +136,10 @@ for plant in range(12):
     send_grbl('G1 X'+str(POS_X_PLANT[plant])+'Y'+str(POS_Y_PLANT[plant]))
     time.sleep(10) #aguarda chegar
     GetImage(plant) #obtem imagem para a planta
-    if plant < 11: wait_user('Proxima planta? ')
+    #if plant < 11: wait_user('Proxima planta? ')
 
 #Retorna para X0 Y0
-wait_user('To X0 Y0 ? ')
+#wait_user('To X0 Y0 ? ')
 print ("Go to X0 Y0...")
 send_grbl('G0X0Y0')
 time.sleep(10)
