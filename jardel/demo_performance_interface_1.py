@@ -4,7 +4,6 @@ import time
 import os
 import json
 import signal
-import sys
 import tkinter as tk
 from tkinter import ttk, scrolledtext
 from PIL import Image, ImageTk
